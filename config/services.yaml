@@ -4,12 +4,18 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    app.api.cache_ttl: 5 # Время жизни кэша в секундах
+    app.api.y_metrika.cache_ttl: 60 # fixme: rm
 
 services:
     # default configuration for services in *this* file
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        bind:
+            $cacheTtl: '%app.api.cache_ttl%'
+            $limit: 20
+
 
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
@@ -23,3 +29,70 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    ###> aliases
+    app.etxt:         '@App\Service\API\Etxt'
+    app.top_visor:    '@App\Service\API\TopVisor'
+    app.go_get_links: '@App\Service\API\GoGetLinks'
+    app.y_metrika:    '@App\Service\API\YandexMetrika'
+    ###< aliases
+
+    ###> initialized parameters
+    # overrides services._defaults.bind.[parameter_name]
+    App\Service\API\YandexMetrika: # fixme: rm
+        arguments:
+            #$cacheTtl:  '%app.api.cache_ttl%'
+            #$appId: '5663835d68604933a025b80f69064915'
+            #$token:     'AQAAAAAJn3UbAAcoartT-lhd0kx0gyVNyvhySvU'
+            #$counterId: 80628946
+            $limit: 20
+            #$logName: 'Yandex Metrika API'
+
+    App\Contracts\Service\API\YandexMetrikaInterface: '@app.y_metrika'
+
+    App\Service\API\YandexMetrika\ParametersStrategy\AgeGenderParametersStrategy: # 30 days
+        arguments:
+            $cacheKey: 'age_gender'
+            $limit: 20
+
+    App\Service\API\YandexMetrika\ParametersStrategy\BrowsersParametersStrategy: # 30 days
+        arguments:
+            $cacheKey: 'browsers'
+            $limit: 10
+
+    App\Service\API\YandexMetrika\ParametersStrategy\CustomParametersStrategy:
+        arguments:
+            $cacheKey: 'custom'
+            $limit: 20
+
+    App\Service\API\YandexMetrika\ParametersStrategy\GeoParametersStrategy: # 7 days
+        arguments:
+            $cacheKey: 'geo'
+            $limit: 20
+
+    App\Service\API\YandexMetrika\ParametersStrategy\MostViewedPagesParametersStrategy: # 30 days
+        arguments:
+            $cacheKey: 'most-viewed-pages'
+            $limit: 10
+
+    App\Service\API\YandexMetrika\ParametersStrategy\PresetParametersStrategy: # 30 days
+        arguments:
+            $cacheKey: 'preset_'
+            $limit: 10
+
+    App\Service\API\YandexMetrika\ParametersStrategy\UsersSearchEngineParametersStrategy: # 30 days
+        arguments:
+            $cacheKey: 'user-search-engine'
+            $limit: 10
+
+    App\Service\API\YandexMetrika\ParametersStrategy\VisitorsParametersStrategy: # 30 days
+        arguments:
+            $cacheKey: 'visitors'
+            $limit: 10
+
+
+    App\Service\API\YandexMetrika\PeriodStrategy\RecentPeriodStrategy:
+        arguments:
+
+
+    ###< initialized parameters
