@@ -1,0 +1,6 @@
+{% form_theme form 'bootstrap_5_layout.html.twig' %}
+
+{{ form_start(form, {attr: {class: 'input-group py-4'}}) }}
+{{ form_widget(form.query) }}
+{{ form_widget(form.submit) }}
+{{ form_end(form) }}

@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Controller\Admin;
+namespace App\Controller\Admin\CRUD;
 
 use App\Controller\Admin\Common\CrudDefaults;
-use App\Entity\Etxt\EtxtMultitasking;
+use App\Entity\Etxt\EtxtTasksAutoAccept;
 use App\Form\Admin\Field\BoolingIntField;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
@@ -11,20 +11,20 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
-class EtxtMultitaskingCrudController extends AbstractCrudController
+class EtxtTasksAutoAcceptCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
     {
-        return EtxtMultitasking::class;
+        return EtxtTasksAutoAccept::class;
     }
 
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
             // the labels used to refer to this entity in titles, buttons, etc.
-            ->setEntityLabelInSingular('Условие мультизаказа')
-            ->setEntityLabelInPlural('Условия мультизаказов')
-            ->setPageTitle('new', 'Создать условие мультизаказа.')
+            ->setEntityLabelInSingular('Условие автосделки')
+            ->setEntityLabelInPlural('Условия автосделки')
+            ->setPageTitle('new', 'Создать условие автосделки.')
             ->setSearchFields([
                 'cmsTitle',
             ])
@@ -35,18 +35,24 @@ class EtxtMultitaskingCrudController extends AbstractCrudController
     {
         //# FIELDS INITIALIZATION:
         [$id, $createdAt, $updatedAt] = CrudDefaults::getAdminFields();
-
         $cmsTitle = TextField::new('cmsTitle')
             ->setLabel('Имя')
         ;
-        $isMultitaskOn = BoolingIntField::new('isMultitask')
-            ->setLabel('Мультизаказ включён')
+        $isAutoAcceptOn = BoolingIntField::new('autoAccept')
+            ->setLabel('Автопринятие заявки на исполнение')
         ;
-        $multitoneMode = BoolingIntField::new('multitoneMode')
-            ->setLabel('Один мультизаказ одному исполнителю')
+        $minRating = IntegerField::new('autoAcceptMinRating')
+            ->setLabel('Требовать минимальный рейтинг')
         ;
-        $multitasksTotal = IntegerField::new('multitasksCounted')
-            ->setLabel('Число мультизаказов')
+        $minPositiveReviews = IntegerField::new('autoAcceptMinPositiveReviews')
+            ->setLabel('Требовать минимум положительных отзывов')
+        ;
+        $maxNegativeReviews = IntegerField::new('autoAcceptMinPositiveReviews')
+            ->setLabel('Требовать максимум отрицательных отзывов')
+        ;
+        $allowedSkillLvl = IntegerField::new('autoAcceptMinPositiveReviews')
+            ->setLabel('Идентификатор уровня мастерства исполнителя')
+            ->setHelp('по умолчанию 0 (без квалификации)')
         ;
         //# FIELDS GROUPS (ORDER: index, new, details, form):
         $adminFieldsOnDetail = [
@@ -57,9 +63,11 @@ class EtxtMultitaskingCrudController extends AbstractCrudController
         ];
         $commonFormFields = [
             $cmsTitle,
-            $isMultitaskOn,
-            $multitoneMode,
-            $multitasksTotal,
+            $isAutoAcceptOn,
+            $minRating,
+            $minPositiveReviews,
+            $maxNegativeReviews,
+            $allowedSkillLvl,
         ];
         //# FIELDS DISPLAY RULES PER PAGE NAME:
         if (Crud::PAGE_INDEX === $pageName) {

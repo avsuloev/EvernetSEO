@@ -1,0 +1,55 @@
+{# DO THIS: the '!' symbol tells Symfony to extend from the original template #}
+{% extends '@!EasyAdmin/layout.html.twig' %}
+
+{% block configured_stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('admin') }}
+{% endblock %}
+
+{% block configured_javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('admin') }}
+{% endblock %}
+
+{% block page_actions_wrapper %}
+    <div
+        class="page-actions"
+        {{ stimulus_controller('modal-form', {
+            formUrl: path('change_project_form')
+        }) }}
+    >
+        {% block page_actions %}{% endblock %}
+
+        {{ include('_modal.html.twig', {
+            modalTitle: 'Modal window',
+        }) }}
+    </div>
+{% endblock %}
+
+{% block header %}
+    {{ parent() }}
+{% endblock %}
+
+{% block header_logo %}
+    <img src="/favicon-32x32.png" alt="Веб-студия Evernet">
+    {{ parent() }}
+{% endblock header_logo %}
+
+{% block sidebar %}
+    {{ parent() }}
+{% endblock %}
+
+{% block content %}
+    {{ parent() }}
+{#    <div {{ stimulus_controller('modal-form', {#}
+{#        formUrl: path('change_project_form')#}
+{#    }) }}>#}
+{#        <button#}
+{#            class="btn btn-primary btn-sm"#}
+{#            data-action="modal-form#openModal"#}
+{#        >Add+</button>#}
+{#        {{ include('_modal.html.twig', {#}
+{#            modalTitle: 'Add a new Product',#}
+{#        }) }}#}
+{#    </div>#}
+{% endblock %}

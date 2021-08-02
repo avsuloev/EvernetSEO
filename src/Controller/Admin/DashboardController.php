@@ -13,6 +13,7 @@ use App\Entity\Etxt\EtxtTaskType;
 use App\Entity\Keyword;
 use App\Entity\KeywordGroup;
 use App\Entity\Project;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
@@ -21,10 +22,11 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class DashboardController extends AbstractDashboardController
 {
-    #[Route('/admin', name: 'admin')]
+    #[Route('/{_locale<%app.supported_locales%>}/admin', name: 'admin')]
     public function index(): Response
     {
-        return parent::index();
+        // return parent::index();
+        return $this->render('admin/dashboard.html.twig');
     }
 
     public function configureDashboard(): Dashboard
@@ -36,23 +38,35 @@ class DashboardController extends AbstractDashboardController
     public function configureMenuItems(): iterable
     {
         // yield MenuItem::linktoDashboard('Dashboard', 'fa fa-home');
-        yield MenuItem::linkToCrud('Клиенты', 'far fa-address-card', Client::class);
-        yield MenuItem::linkToCrud('Проекты', 'far fa-newspaper', Project::class);
-        yield MenuItem::linkToCrud('Группы ключей', 'fas fa-project-diagram', KeywordGroup::class);
-        yield MenuItem::linkToCrud('Ключи', 'fas fa-search-plus', Keyword::class);
-        yield MenuItem::linkToCrud('Etxt: текстовки', 'far fa-file-alt', EtxtTask::class);
+        yield MenuItem::section('Management');
+        yield MenuItem::linkToCrud('Clients', 'far fa-address-card', Client::class);
+        yield MenuItem::linkToCrud('Projects', 'far fa-newspaper', Project::class);
+        yield MenuItem::linkToCrud('Key groups', 'fas fa-project-diagram', KeywordGroup::class);
+        yield MenuItem::linkToCrud('Keywords', 'fas fa-search-plus', Keyword::class);
+        yield MenuItem::linkToCrud('Etxt: texts', 'far fa-file-alt', EtxtTask::class);
 
-        yield MenuItem::section('Etxt templates');
-        yield MenuItem::linkToCrud('Как нужно писать', 'far fa-edit', EtxtTaskTextRestraints::class);
-        yield MenuItem::linkToCrud('Кто может писать', 'fas fa-user-lock', EtxtTasksAuthorRestraints::class);
-        yield MenuItem::linkToCrud('Тип текста', 'fas fa-superscript', EtxtTaskType::class);
-        yield MenuItem::linkToCrud('Автосделка', 'fas fa-magic', EtxtTasksAutoAccept::class);
-        yield MenuItem::linkToCrud('Мультизаказы', 'fas fa-tasks', EtxtMultitasking::class);
-        yield MenuItem::linkToCrud('Etxt: пул авторов', 'fas fa-user-edit', EtxtAuthor::class);
+        yield MenuItem::section('Templates for Etxt');
+        yield MenuItem::linkToCrud('Instructions on writing', 'far fa-edit', EtxtTaskTextRestraints::class);
+        yield MenuItem::linkToCrud('Who can write', 'fas fa-user-lock', EtxtTasksAuthorRestraints::class);
+        yield MenuItem::linkToCrud('Text type', 'fas fa-superscript', EtxtTaskType::class);
+        yield MenuItem::linkToCrud('Autodeal', 'fas fa-magic', EtxtTasksAutoAccept::class);
+        yield MenuItem::linkToCrud('Multitasks', 'fas fa-tasks', EtxtMultitasking::class);
+        yield MenuItem::linkToCrud('Authors pool', 'fas fa-user-edit', EtxtAuthor::class);
 
-        yield MenuItem::section('Links');
+        yield MenuItem::section('External accounts');
         yield MenuItem::linkToUrl('Yandex.Metrika', 'fab fa-yandex', 'https://metrika.yandex.ru');
         yield MenuItem::linkToUrl('TopVisor', 'fas fa-search', 'https://topvisor.com/account');
         yield MenuItem::linkToUrl('Etxt', 'fab fa-internet-explorer', 'https://www.etxt.ru/users/signin');
+    }
+
+    public function configureCrud(): Crud
+    {
+        return Crud::new()
+            // the first argument is the "template name", which is the same as the
+            // Twig path but without the `@EasyAdmin/` prefix
+            ->overrideTemplates([
+                'layout' => 'admin/layout.html.twig',
+            ])
+        ;
     }
 }

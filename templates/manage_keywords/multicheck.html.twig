@@ -1,0 +1,6 @@
+{% form_theme form 'bootstrap_5_layout.html.twig' %}
+
+{# ✅ #}
+{{ form_start(form, {'attr': {'role': 'multicheck'}}) }}
+{{ form_widget(form.checkbox, {'attr': {'role': 'multicheck', 'aria-label': 'Check all on keywords table'}}) }}
+{{ form_end(form) }}

@@ -1,33 +1,35 @@
 <?php
 
-namespace App\Controller\Admin;
+namespace App\Controller\Admin\CRUD;
 
 use App\Controller\Admin\Common\CrudDefaults;
-use App\Entity\Client;
+use App\Entity\Project;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\UrlField;
 
-class ClientCrudController extends AbstractCrudController
+class ProjectCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
     {
-        return Client::class;
+        return Project::class;
     }
 
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
             // the labels used to refer to this entity in titles, buttons, etc.
-            ->setEntityLabelInSingular('Клиент')
-            ->setEntityLabelInPlural('Клиенты')
-            ->setPageTitle('new', 'Создать клиента.')
+            ->setEntityLabelInSingular('Проект')
+            ->setEntityLabelInPlural('Проекты')
+            ->setPageTitle('new', 'Создать проект.')
             ->setSearchFields([
-                'name',
-                'email',
+                'cmsTitle',
+                'url',
+                'client.name',
             ])
         ;
     }
@@ -36,32 +38,53 @@ class ClientCrudController extends AbstractCrudController
     {
         //# FIELDS INITIALIZATION:
         [$id, $createdAt, $updatedAt] = CrudDefaults::getAdminFields();
-        $name = TextField::new('name')
+        $name = TextField::new('cmsTitle')
             ->setLabel('Имя')
         ;
-        $email = EmailField::new('email')
-            ->setLabel('email')
+        $tvId = TextField::new('tvId')
+            ->setLabel('TopVisor ID')
         ;
-        $accessUrl = TextField::new('accessUrl')
-            ->setLabel('url доступа к ключам')
+        $ymId = TextField::new('ymId')
+            ->setLabel('Y.Metrika ID')
         ;
-        $projects = AssociationField::new('projects')
-            ->setCrudController(ProjectCrudController::class)
+        $isActive = BooleanField::new('isActive')
+            ->setLabel('Активен')
+        ;
+        $url = UrlField::new('url')
+            ->setLabel('Адрес сайта')
+        ;
+        $client = AssociationField::new('client')
+            ->setCrudController(ClientCrudController::class)
             ->autocomplete()
-            ->setLabel('Проекты')
+            ->setRequired(true)
+            ->setLabel('Клиент')
+        ;
+        $keywordGroups = AssociationField::new('keywordGroups')
+            ->setCrudController(KeywordGroupCrudController::class)
+            ->autocomplete()
+            ->setLabel('Группы ключей')
+        ;
+        $etxtTasks = AssociationField::new('etxtTasks')
+            ->setCrudController(EtxtTaskCrudController::class)
+            ->autocomplete()
+            ->setLabel('Текстовки Etxt')
         ;
         //# FIELDS GROUPS (ORDER: index, new, details, form):
         $adminFieldsOnDetail = [
             FormField::addPanel('Информация для администратора'),
             $id,
-            $accessUrl,
+            $isActive,
             $createdAt,
             $updatedAt,
         ];
         $commonFormFields = [
             $name,
-            $email,
-            $projects,
+            $url,
+            $tvId,
+            $ymId,
+            $client,
+            $keywordGroups,
+            $etxtTasks,
         ];
         //# FIELDS DISPLAY RULES PER PAGE NAME:
         if (Crud::PAGE_INDEX === $pageName) {
@@ -76,22 +99,10 @@ class ClientCrudController extends AbstractCrudController
                 ...$commonFormFields,
             ];
         }
+
         return [
             ...$commonFormFields,
             ...$adminFieldsOnDetail,
         ];
-
-        // yield TextField::new('name')->setLabel((new \ReflectionClass($this))->getMethod(__FUNCTION__)->getName());
-        // yield TextField::new('name');
-        // yield EmailField::new('email');
-
-        // $createdAt = DateTimeField::new('createdAt')->setFormTypeOptions([
-        //     'html5' => true,
-        //     // 'years' => range(date('Y'), date('Y') + 5),
-        //     'widget' => 'single_text',
-        // ]);
-        // if (Crud::PAGE_INDEX === $pageName) {
-        //     yield $createdAt->setFormTypeOption('disabled', true);
-        // }
     }
 }

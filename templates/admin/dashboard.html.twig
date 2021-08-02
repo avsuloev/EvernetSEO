@@ -1,0 +1,23 @@
+{# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block page_title ['Welcome'|trans, ', ', app.user.username,'!']|join %}
+
+{% block page_content %}
+    <style>
+        p { max-width: 600px; }
+    </style>
+
+    <section class="container py-4">
+        {{ render(controller(
+            'App\\Controller\\Admin\\ProjectReportController::projectEntityForm'
+        )) }}
+        {{ render(controller(
+            'App\\Controller\\Admin\\ProjectReportController::index'
+        )) }}
+    </section>
+
+    {{ render(controller(
+        'App\\Controller\\Admin\\KeywordsImportController::uploadXslx'
+    )) }}
+{% endblock %}

@@ -33,17 +33,27 @@ class Keyword
     /**
      * @ORM\ManyToOne(targetEntity=KeywordGroup::class, inversedBy="keywords")
      */
-    private $keywordGroup;
+    private ?KeywordGroup $keywordGroup;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
      */
-    private int $position;
+    private ?int $position;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
      */
-    private int $frequency;
+    private ?int $frequency;
+
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private ?string $clientNote;
+
+    public function __toString()
+    {
+        return $this->name;
+    }
 
     public function getName(): ?string
     {
@@ -113,6 +123,18 @@ class Keyword
     public function setFrequency(?int $frequency): self
     {
         $this->frequency = $frequency;
+
+        return $this;
+    }
+
+    public function getClientNote(): ?string
+    {
+        return $this->clientNote;
+    }
+
+    public function setClientNote(?string $clientNote): self
+    {
+        $this->clientNote = $clientNote;
 
         return $this;
     }

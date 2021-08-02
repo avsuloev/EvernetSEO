@@ -1,0 +1,108 @@
+{% extends 'base.html.twig' %}
+{% form_theme form with ['bootstrap_5_layout.html.twig', _self] %}
+{#{% form_theme form _self %}#}
+
+{% block title %}Управление проектом{% endblock %}
+
+{% block body %}
+    {{ flasher_render() }}
+
+    <section
+        {{ stimulus_controller('keywords_management') }}
+        class="container-xxl my-md-4"
+    >
+        {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+            <h1>{{ 'Welcome'|trans }}, {{ app.user.name }}!</h1>
+        {% endif %}
+
+        <hr>
+
+        {{ render(controller(
+            'App\\Controller\\KeywordsManagementController::searchBar'
+        )) }}
+        {{ form_start(form) }}
+        <fieldset {{ stimulus_controller('modal-form', {
+            formTitle: 'Comment'|trans
+        }) }}>
+            <legend>
+                {{ 'Current projects'|trans }}
+            </legend>
+            <p>
+                Для управления ключевыми запросами проекта, пожалуйста, воспользуйтесь меню, расположенным ниже.
+            </p>
+
+            <div class="form-error">
+                {{ form_errors(form) }}
+            </div>
+
+            <div role="region" aria-labelledby="Cap1" tabindex="0" class="table-responsive-lg">
+                <table
+                    data-keywords-management-target="table"
+                    id="ProjectKeywords"
+                    class="table table-striped table-hover caption-top"
+                >
+                    <caption id="ProjectKeywordsCaption">
+                        Ключи для проекта <strong>&quot;ProjectName&quot;</strong>
+                    </caption>
+                    <tr>
+                        <th scope="col">
+                            {{ render(controller(
+                                'App\\Controller\\KeywordsManagementController::multicheck'
+                            )) }}
+                        </th>
+                        <th scope="col">Запрос</th>
+                        <th scope="col">Посадочная</th>
+                        <th scope="col">Группа</th>
+                        <th scope="col">Позиция</th>
+                        <th scope="col">Частотность</th>
+                        <th scope="col">Комментарий</th>
+                    </tr>
+                    {% if form.keywords is not null and form.keywords is not empty %}
+                        {% for keyword in form.keywords %}
+                            <tr class="form-group">
+                                {{ form_widget(keyword) }}
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        {% for i in 0..6 %}
+                            <td> &mdash; </td>
+                        {% endfor %}
+                    {% endif %}
+                </table>
+            </div>
+
+            <div class="form-group">
+                {{ form_widget(form.submit) }}
+            </div>
+            {{ include('_modal.html.twig') }}
+        </fieldset>
+        {{ form_end(form) }}
+    </section>
+{% endblock %}
+
+{% block _kw_client_fieldset_keywords_entry_widget %}
+    <td>{{ form_widget(form.isApproved, {'attr': {'class': 'dependent'}}) }}</td>
+    <td >{{ form_widget(form.name, {'attr': {'class': 'keyword'}}) }}</td>
+    <td>{{ form_widget(form.url, {'attr': {'class': 'keyword_url'}}) }}</td>
+    <td>{{ form_widget(form.keywordGroup, {'attr': {'class': 'keyword_group'}}) }}</td>
+    <td>{{ form_widget(form.position) }}</td>
+    <td>{{ form_widget(form.frequency) }}</td>
+    <td class="text-center">
+        {{ form_widget(form.clientNote) }}
+{#        data-target="#modal_{{ form.clientNote.vars.id }}"#}
+        <button
+            type="button"
+            class="btn btn-primary"
+            data-toggle="modal"
+            data-action="modal-form#openHiddenModalInput"
+        >
+            {% if form.clientNote.vars.value is empty %}
+                <i class="far fa-comment-alt" data-toggle="tooltip" data-placement="top" title="Add comment"></i>
+            {% else %}
+                <i class="fas fa-comment-alt" data-toggle="tooltip" data-placement="top" title="Edit comment"></i>
+            {% endif %}
+        </button>
+{#        {{- block('_modal_client_note') -}}#}
+{#        {{ form.clientNote.vars.id }}#}
+    </td>
+{% endblock %}

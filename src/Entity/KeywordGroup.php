@@ -3,19 +3,23 @@
 namespace App\Entity;
 
 use App\Entity\Traits\GeneratedULIDTrait;
-use App\Repository\KeywordGroupRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
+use Gedmo\Tree\Traits\NestedSetEntityUuid;
 
 /**
- * @ORM\Entity(repositoryClass=KeywordGroupRepository::class)
+ * @Gedmo\Tree(type="nested")
+ * @ORM\Entity(repositoryClass=NestedTreeRepository::class)
  */
 class KeywordGroup
 {
     use GeneratedULIDTrait;
     use TimestampableEntity;
+    use NestedSetEntityUuid;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -26,32 +30,47 @@ class KeywordGroup
      * @ORM\ManyToOne(targetEntity=Project::class, inversedBy="keywordGroups")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $project;
+    private ?Project $project;
 
     /**
      * @ORM\OneToMany(targetEntity=Keyword::class, mappedBy="keywordGroup", orphanRemoval=true)
      */
     private $keywords;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=KeywordGroup::class, inversedBy="supergroups")
-     * @ORM\JoinTable(name="linked_key_groups",
-     *     joinColumns={@ORM\JoinColumn(name="group_id", referencedColumnName="id")},
-     *     inverseJoinColumns={@ORM\JoinColumn(name="linked_group_id", referencedColumnName="id")}
-     * )
-     */
-    private $subgroups;
+//    /**
+//     * @ORM\Column(type="boolean")
+//     */
+//    private bool $isExcludedAsSub = false;
 
     /**
-     * @ORM\ManyToMany(targetEntity=KeywordGroup::class, mappedBy="subgroups")
+     * Used to store the tree root id value
+     * or identify the column as the relation to root node.
+     *
+     * @Gedmo\TreeRoot
+     * @ORM\ManyToOne(targetEntity=KeywordGroup::class)
+     * @ORM\JoinColumn(name="tree_root", referencedColumnName="id", onDelete="CASCADE")
      */
-    private $supergroups;
+    private $root;
+
+    /**
+     * Relation to parent node.
+     *
+     * @Gedmo\TreeParent
+     * @ORM\ManyToOne(targetEntity=KeywordGroup::class, inversedBy="subgroups")
+     * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
+     */
+    private $supergroup;
+
+    /**
+     * @ORM\OneToMany(targetEntity=KeywordGroup::class, mappedBy="supergroup")
+     * @ORM\OrderBy({"left" = "ASC"})
+     */
+    private $subgroups;
 
     public function __construct()
     {
         $this->keywords = new ArrayCollection();
         $this->subgroups = new ArrayCollection();
-        $this->supergroups = new ArrayCollection();
     }
 
     public function __toString()
@@ -113,6 +132,30 @@ class KeywordGroup
         return $this;
     }
 
+    public function getRoot(): ?self
+    {
+        return $this->root;
+    }
+
+//    public function setRoot(?self $root): self
+//    {
+//        $this->root = $root;
+//
+//        return $this;
+//    }
+
+    public function getSupergroup(): ?self
+    {
+        return $this->supergroup;
+    }
+
+    public function setSupergroup(?self $supergroup): self
+    {
+        $this->supergroup = $supergroup;
+
+        return $this;
+    }
+
     /**
      * @return Collection|self[]
      */
@@ -121,46 +164,73 @@ class KeywordGroup
         return $this->subgroups;
     }
 
-    public function addSubgroup(self $subgroup): self
+//    public function addSubgroup(self $subgroup): self
+//    {
+//        if (!$this->subgroups->contains($subgroup)) {
+//            $this->subgroups[] = $subgroup;
+//            $subgroup->setSupergroup($this);
+//        }
+//
+//        return $this;
+//    }
+//
+//    public function removeSubgroup(self $subgroup): self
+//    {
+//        if ($this->subgroups->removeElement($subgroup)) {
+//            // set the owning side to null (unless already changed)
+//            if ($subgroup->getSupergroup() === $this) {
+//                $subgroup->setSupergroup(null);
+//            }
+//        }
+//
+//        return $this;
+//    }
+
+    public function getLevel(): ?int
     {
-        if (!$this->subgroups->contains($subgroup)) {
-            $this->subgroups[] = $subgroup;
-        }
+        return $this->level;
+    }
+
+    public function setLevel(int $level): self
+    {
+        $this->level = $level;
 
         return $this;
     }
 
-    public function removeSubgroup(self $subgroup): self
+    public function getRight(): ?int
     {
-        $this->subgroups->removeElement($subgroup);
+        return $this->right;
+    }
+
+    public function setRight(int $right): self
+    {
+        $this->right = $right;
 
         return $this;
     }
 
-    /**
-     * @return Collection|self[]
-     */
-    public function getSupergroups(): Collection
+    public function getLeft(): ?int
     {
-        return $this->supergroups;
+        return $this->left;
     }
 
-    public function addSupergroup(self $supergroup): self
+    public function setLeft(int $left): self
     {
-        if (!$this->supergroups->contains($supergroup)) {
-            $this->supergroups[] = $supergroup;
-            $supergroup->addSubgroup($this);
-        }
+        $this->left = $left;
 
         return $this;
     }
 
-    public function removeSupergroup(self $supergroup): self
-    {
-        if ($this->supergroups->removeElement($supergroup)) {
-            $supergroup->removeSubgroup($this);
-        }
-
-        return $this;
-    }
+//    public function getIsExcludedAsSub(): ?bool
+//    {
+//        return $this->isExcludedAsSub;
+//    }
+//
+//    public function setIsExcludedAsSub(bool $isExcludedAsSub): self
+//    {
+//        $this->isExcludedAsSub = $isExcludedAsSub;
+//
+//        return $this;
+//    }
 }

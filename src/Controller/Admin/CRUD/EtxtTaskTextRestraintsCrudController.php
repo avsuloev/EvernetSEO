@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Controller\Admin;
+namespace App\Controller\Admin\CRUD;
 
 use App\Controller\Admin\Common\CrudDefaults;
-use App\Entity\Etxt\EtxtTasksAutoAccept;
+use App\Entity\Etxt\EtxtTaskTextRestraints;
 use App\Form\Admin\Field\BoolingIntField;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
@@ -11,20 +11,20 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
-class EtxtTasksAutoAcceptCrudController extends AbstractCrudController
+class EtxtTaskTextRestraintsCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
     {
-        return EtxtTasksAutoAccept::class;
+        return EtxtTaskTextRestraints::class;
     }
 
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
             // the labels used to refer to this entity in titles, buttons, etc.
-            ->setEntityLabelInSingular('Условие автосделки')
-            ->setEntityLabelInPlural('Условия автосделки')
-            ->setPageTitle('new', 'Создать условие автосделки.')
+            ->setEntityLabelInSingular('Требование к тексту')
+            ->setEntityLabelInPlural('Требования к тексту')
+            ->setPageTitle('new', 'Создать требование к тексту.')
             ->setSearchFields([
                 'cmsTitle',
             ])
@@ -38,21 +38,22 @@ class EtxtTasksAutoAcceptCrudController extends AbstractCrudController
         $cmsTitle = TextField::new('cmsTitle')
             ->setLabel('Имя')
         ;
-        $isAutoAcceptOn = BoolingIntField::new('autoAccept')
-            ->setLabel('Автопринятие заявки на исполнение')
+        $uniqueScore = IntegerField::new('uniqueScore')
+            ->setLabel('Уникальность заказа')
         ;
-        $minRating = IntegerField::new('autoAcceptMinRating')
-            ->setLabel('Требовать минимальный рейтинг')
+        $placeOnSite = BoolingIntField::new('placeOnSite')
+            ->setLabel('Размещение текста на сайте')
         ;
-        $minPositiveReviews = IntegerField::new('autoAcceptMinPositiveReviews')
-            ->setLabel('Требовать минимум положительных отзывов')
+        $spaceCountMode = BoolingIntField::new('spaceCountMode')
+            ->setLabel('Учитывать пробелы при подсчёте символов')
         ;
-        $maxNegativeReviews = IntegerField::new('autoAcceptMinPositiveReviews')
-            ->setLabel('Требовать максимум отрицательных отзывов')
+        $taskSizeInChars = IntegerField::new('taskSizeInChars')
+            ->setLabel('Размер заказа в символах')
+            ->setHelp('Обязательный параметр при отсутствии параметра text')
         ;
-        $allowedSkillLvl = IntegerField::new('autoAcceptMinPositiveReviews')
-            ->setLabel('Идентификатор уровня мастерства исполнителя')
-            ->setHelp('по умолчанию 0 (без квалификации)')
+        $completionIs90Percent = BoolingIntField::new('require90PercentCompletion')
+            ->setLabel('Проверять минимальный размер результата сдачи')
+            ->setHelp('Тексты менее 90% от размера заказа приниматься не будут')
         ;
         //# FIELDS GROUPS (ORDER: index, new, details, form):
         $adminFieldsOnDetail = [
@@ -63,11 +64,11 @@ class EtxtTasksAutoAcceptCrudController extends AbstractCrudController
         ];
         $commonFormFields = [
             $cmsTitle,
-            $isAutoAcceptOn,
-            $minRating,
-            $minPositiveReviews,
-            $maxNegativeReviews,
-            $allowedSkillLvl,
+            $uniqueScore,
+            $placeOnSite,
+            $spaceCountMode,
+            $taskSizeInChars,
+            $completionIs90Percent,
         ];
         //# FIELDS DISPLAY RULES PER PAGE NAME:
         if (Crud::PAGE_INDEX === $pageName) {

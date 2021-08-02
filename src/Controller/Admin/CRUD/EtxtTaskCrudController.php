@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\Admin;
+namespace App\Controller\Admin\CRUD;
 
 use App\Controller\Admin\Common\CrudDefaults;
 use App\Entity\Etxt\EtxtTask;

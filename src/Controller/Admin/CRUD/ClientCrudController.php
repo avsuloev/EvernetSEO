@@ -1,36 +1,34 @@
 <?php
 
-namespace App\Controller\Admin;
+namespace App\Controller\Admin\CRUD;
 
 use App\Controller\Admin\Common\CrudDefaults;
-use App\Entity\Keyword;
+use App\Entity\Client;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\UrlField;
 
-class KeywordCrudController extends AbstractCrudController
+class ClientCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
     {
-        return Keyword::class;
+        return Client::class;
     }
 
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
             // the labels used to refer to this entity in titles, buttons, etc.
-            ->setEntityLabelInSingular('Ключ')
-            ->setEntityLabelInPlural('Ключи')
-            ->setPageTitle('new', 'Создать ключ')
+            ->setEntityLabelInSingular('Клиент')
+            ->setEntityLabelInPlural('Клиенты')
+            ->setPageTitle('new', 'Создать клиента.')
             ->setSearchFields([
                 'name',
-                'url',
-                'keywordGroup',
+                'email',
             ])
         ;
     }
@@ -40,46 +38,36 @@ class KeywordCrudController extends AbstractCrudController
         //# FIELDS INITIALIZATION:
         [$id, $createdAt, $updatedAt] = CrudDefaults::getAdminFields();
         $name = TextField::new('name')
-            ->setLabel('Ключ')
+            ->setLabel('Имя')
         ;
-        $url = UrlField::new('url')
-            ->setLabel('Адрес сайта')
+        $email = EmailField::new('email')
+            ->setLabel('email')
         ;
-        $isApproved = BooleanField::new('isApproved')
-            ->setLabel('Одобрен клиентом')
-            ->setFormTypeOption('disabled', 'disabled')
+        $hasKwAccess = BooleanField::new('hasKwAccess')
+            ->setLabel('Доступ к ключам')
         ;
-        $keywordGroup = AssociationField::new('keywordGroup')
-            ->setCrudController(KeywordGroupCrudController::class)
+        $projects = AssociationField::new('projects')
+            ->setCrudController(ProjectCrudController::class)
             ->autocomplete()
-            ->setLabel('Группа ключей')
-        ;
-        $position = IntegerField::new('position')
-            ->setLabel('Позиция')
-        ;
-        $frequency = IntegerField::new('frequency')
-            ->setLabel('Частота')
+            ->setLabel('Проекты')
         ;
         //# FIELDS GROUPS (ORDER: index, new, details, form):
         $adminFieldsOnDetail = [
             FormField::addPanel('Информация для администратора'),
             $id,
-            $isApproved,
             $createdAt,
             $updatedAt,
         ];
         $commonFormFields = [
             $name,
-            $url,
-            $keywordGroup,
-            $position,
-            $frequency,
+            $email,
+            $hasKwAccess,
+            $projects,
         ];
         //# FIELDS DISPLAY RULES PER PAGE NAME:
         if (Crud::PAGE_INDEX === $pageName) {
             return [
                 ...$commonFormFields,
-                $isApproved,
                 $createdAt,
                 $updatedAt,
             ];
@@ -93,5 +81,18 @@ class KeywordCrudController extends AbstractCrudController
             ...$commonFormFields,
             ...$adminFieldsOnDetail,
         ];
+
+        // yield TextField::new('name')->setLabel((new \ReflectionClass($this))->getMethod(__FUNCTION__)->getName());
+        // yield TextField::new('name');
+        // yield EmailField::new('email');
+
+        // $createdAt = DateTimeField::new('createdAt')->setFormTypeOptions([
+        //     'html5' => true,
+        //     // 'years' => range(date('Y'), date('Y') + 5),
+        //     'widget' => 'single_text',
+        // ]);
+        // if (Crud::PAGE_INDEX === $pageName) {
+        //     yield $createdAt->setFormTypeOption('disabled', true);
+        // }
     }
 }
