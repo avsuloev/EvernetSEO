@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file source-language="ru" target-language="ru" datatype="plaintext" original="file.ext">
+    <header>
+      <tool tool-id="symfony" tool-name="Symfony"/>
+    </header>
+    <body>
+      <trans-unit id="5RJIdzu" resname="Management">
+        <source>Management</source>
+        <target>Менеджмент</target>
+      </trans-unit>
+      <trans-unit id="ZaclZUL" resname="Clients">
+        <source>Clients</source>
+        <target>Клиенты</target>
+      </trans-unit>
+      <trans-unit id="BOKpcor" resname="Projects">
+        <source>Projects</source>
+        <target>Проекты</target>
+      </trans-unit>
+      <trans-unit id="27Iq0gV" resname="Key groups">
+        <source>Key groups</source>
+        <target>Группы ключей</target>
+      </trans-unit>
+      <trans-unit id="i.25PK_" resname="Keywords">
+        <source>Keywords</source>
+        <target>Ключи</target>
+      </trans-unit>
+      <trans-unit id="X0UDG_Q" resname="Etxt: texts">
+        <source>Etxt: texts</source>
+        <target>Etxt: текстовки</target>
+      </trans-unit>
+      <trans-unit id="QfVh.ej" resname="Templates for Etxt">
+        <source>Templates for Etxt</source>
+        <target>Шаблоны для Etxt</target>
+      </trans-unit>
+      <trans-unit id="spBUk5O" resname="Instructions on writing">
+        <source>Instructions on writing</source>
+        <target>Как нужно писать</target>
+      </trans-unit>
+      <trans-unit id="hBOKivQ" resname="Who can write">
+        <source>Who can write</source>
+        <target>Кто может писать</target>
+      </trans-unit>
+      <trans-unit id="1VC7PTD" resname="Text type">
+        <source>Text type</source>
+        <target>Тип текста</target>
+      </trans-unit>
+      <trans-unit id="hDMphzU" resname="Autodeal">
+        <source>Autodeal</source>
+        <target>Автосделка</target>
+      </trans-unit>
+      <trans-unit id="8.Zid8g" resname="Multitasks">
+        <source>Multitasks</source>
+        <target>Мультизаказы</target>
+      </trans-unit>
+      <trans-unit id="ki73IuY" resname="Authors pool">
+        <source>Authors pool</source>
+        <target>Пул авторов</target>
+      </trans-unit>
+      <trans-unit id="dIVoSWR" resname="External accounts">
+        <source>External accounts</source>
+        <target>Сторонние ЛК</target>
+      </trans-unit>
+      <trans-unit id="Ps0V4tu" resname="Yandex.Metrika">
+        <source>Yandex.Metrika</source>
+        <target>Яндекс.Метрика</target>
+      </trans-unit>
+      <trans-unit id="QzRuxnS" resname="TopVisor">
+        <source>TopVisor</source>
+        <target>Топвизор</target>
+      </trans-unit>
+      <trans-unit id="RaegfFA" resname="Etxt">
+        <source>Etxt</source>
+        <target>Etxt</target>
+      </trans-unit>
+      <trans-unit id="ScJmuqq" resname="Search">
+        <source>Search</source>
+        <target>Искать</target>
+      </trans-unit>
+      <trans-unit id="FV_BbAQ" resname="Submit">
+        <source>Submit</source>
+        <target>Отправить</target>
+      </trans-unit>
+      <trans-unit id="vaBQWFo" resname="—">
+        <source>—</source>
+        <target>—</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file source-language="ru" target-language="ru" datatype="plaintext" original="file.ext">
+    <header>
+      <tool tool-id="symfony" tool-name="Symfony"/>
+    </header>
+    <body>
+      <trans-unit id="ylg544o" resname="Authorization">
+        <source>Authorization</source>
+        <target>Авторизация</target>
+      </trans-unit>
+      <trans-unit id="nWMiwfT" resname="Login">
+        <source>Login</source>
+        <target>Вход</target>
+      </trans-unit>
+      <trans-unit id="acVpEs4" resname="You are logged in as">
+        <source>You are logged in as</source>
+        <target>Вы авторизовались как</target>
+      </trans-unit>
+      <trans-unit id="0FJ_Sz1" resname="Logout">
+        <source>Logout</source>
+        <target>Выйти</target>
+      </trans-unit>
+      <trans-unit id="v9QCsvb" resname="Sign in">
+        <source>Sign in</source>
+        <target>Войти</target>
+      </trans-unit>
+      <trans-unit id="vY_IGL2" resname="Please enter username">
+        <source>Please enter username</source>
+        <target>Пожалуйста, введите имя пользователя</target>
+      </trans-unit>
+      <trans-unit id="iyUEA8O" resname="Please enter password">
+        <source>Please enter password</source>
+        <target>Пожалуйста, введите пароль</target>
+      </trans-unit>
+      <trans-unit id="47ienTP" resname="Username">
+        <source>Username</source>
+        <target>Имя пользователя</target>
+      </trans-unit>
+      <trans-unit id="588_9PF" resname="Password">
+        <source>Password</source>
+        <target>Пароль</target>
+      </trans-unit>
+      <trans-unit id="9fUjkq3" resname="Send Login Link">
+        <source>Send Login Link</source>
+        <target>Получить ссылку для входа</target>
+      </trans-unit>
+      <trans-unit id="P.wnXj0" resname="Enter your email address">
+        <source>Enter your email address</source>
+        <target>Введите Ваш email</target>
+      </trans-unit>
+      <trans-unit id="PQkg9Hr" resname="The link is send to your email address">
+        <source>The link is send to your email address</source>
+        <target>Ссылка была отправлена на Ваш почтовый адрес</target>
+      </trans-unit>
+      <trans-unit id="uPUWTKo" resname="Hi! You are about to login to Evernet CRM">
+        <source>Hi! You are about to login to Evernet CRM</source>
+        <target>Здравствуйте! Вы авторизуетесь в Evernet CRM</target>
+      </trans-unit>
+      <trans-unit id="MfvvFiW" resname="Continue">
+        <source>Continue</source>
+        <target>Продолжить</target>
+      </trans-unit>
+      <trans-unit id="kxwK20D" resname="This link is expired or incorrect">
+        <source>This link is expired or incorrect</source>
+        <target>Ссылка устарела или повреждена</target>
+      </trans-unit>
+      <trans-unit id="6fPlzfF" resname="This email is not allowed">
+        <source>This email is not allowed</source>
+        <target>Данный email недоступен</target>
+      </trans-unit>
+      <trans-unit id="Aag67hb" resname="Access is not granted by administrator">
+        <source>Access is not granted by administrator</source>
+        <target>Доступ не разрешен администратором</target>
+      </trans-unit>
+      <trans-unit id="DiImtSN" resname="Welcome">
+        <source>Welcome</source>
+        <target>Добро пожаловать</target>
+      </trans-unit>
+      <trans-unit id="zIlfhnY" resname="Welcome to the Evernet CRM!">
+        <source>Welcome to the Evernet CRM!</source>
+        <target>Добро пожаловать в Evernet CRM!</target>
+      </trans-unit>
+      <trans-unit id="CX4rMlq" resname="Nice to meet you">
+        <source>Nice to meet you</source>
+        <target>Рады знакомству</target>
+      </trans-unit>
+      <trans-unit id="NK9PHQP" resname="Welcome to the">
+        <source>Welcome to the</source>
+        <target>Приветствуем Вас в</target>
+      </trans-unit>
+      <trans-unit id="xoVJvz." resname="Get started on your active projects">
+        <source>Get started on your active projects</source>
+        <target>Начать управление Вашими текущими проектами</target>
+      </trans-unit>
+      <trans-unit id="0rJaZM3" resname="Click on the link above to enter on webpage. Link expires in">
+        <source>Click on the link above to enter on webpage. Link expires in</source>
+        <target>Перейдите по ссылке выше, чтобы войти на сайт. Ссылка истекает через</target>
+      </trans-unit>
+      <trans-unit id="hmn2ipi" resname="Manage project">
+        <source>Manage project</source>
+        <target>Управлять проектом</target>
+      </trans-unit>
+      <trans-unit id="wSdDnqg" resname="Current projects">
+        <source>Current projects</source>
+        <target>Текущие проекты</target>
+      </trans-unit>
+      <trans-unit id="IeYXhsW" resname="Enter Evernet CRM">
+        <source>Enter Evernet CRM</source>
+        <target>Войти в Evernet CRM</target>
+      </trans-unit>
+      <trans-unit id="fZ63rLE" resname="Close">
+        <source>Close</source>
+        <target>Закрыть</target>
+      </trans-unit>
+      <trans-unit id="3Qrnpcv" resname="Save changes">
+        <source>Save changes</source>
+        <target>Применить</target>
+      </trans-unit>
+      <trans-unit id="RPXj__x" resname="Comment">
+        <source>Comment</source>
+        <target>Комментарий</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
