@@ -10,6 +10,8 @@ A brief description of what this project does and who it's for
 
 Install Symfony and Composer packages on your OS
 
+For __.pdf__ generation support install [wkhtmltopdf](https://wkhtmltopdf.org/) package.
+
 Clone the project
 
 ```bash
@@ -28,7 +30,17 @@ Install dependencies
   composer install --optimize-autoloader
 ```
 
-Generate app-hashed password
+Generate configuration file (.env.local.php)
+
+```bash
+  composer dump-env prod
+```
+
+Check generated configuration is suited for your preferred project environment
+
+If there is no 'admin' table entries presented in project DB:
+
+- generate app-hashed password
 
 ```bash
   symfony console security:hash-password
@@ -36,10 +48,11 @@ Generate app-hashed password
   php bin/console security:hash-password
 ```
 
-Generate configuration file (.env.local.php)
+- add  entry in 'admin' table with generated password from previous step
 
-```bash
-  composer dump-env prod
+```SQL
+INSERT INTO admin (id, username, roles, password) \
+VALUES (nextval('admin_id_seq'), 'admin', '[\"ROLE_ADMIN\"]', <your_generated_password>);
 ```
 
 Start the server
@@ -52,9 +65,6 @@ Start the server
   # Built-in server also works
   php -S localhost:8080 -t public/
 ```
-
-
-
 
 ## Environment Variables
 
@@ -91,7 +101,12 @@ To run tests, run the following command
 
 ## Appendix
 
-Any additional information goes here
+Update translation entries list (for RU locale).
+
+```bash
+  symfony console translation:update ru --force --domain=messages
+```
+____
 
 getVisitsViewsUsers == getVisitors
 getTopPageViews == getMostViewedPages
@@ -116,5 +131,5 @@ getGeoArea
 ## Authors
 
 - [@avsuloev](https://github.com/avsuloev)
-    - [mail](mailto:avsuloev@outlook.com)
+    - [mail](mailto:av.suloev@outlook.com)
     - [Telegram](https://t.me/alexanderWebDev)
