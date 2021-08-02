@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<section class="container">
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-5">
+            <p class="h4 mb-4">{{ 'Hi! You are about to login to Evernet CRM'|trans }}</p>
+            <!-- uses a form with hidden fields to
+            create the POST request --->
+            <form action="{{ path('login_check') }}" method="POST">
+                <input type="hidden" name="expires" value="{{ expires }}">
+                <input type="hidden" name="user" value="{{ user }}">
+                <input type="hidden" name="hash" value="{{ hash }}">
+
+                <button type="submit" class="btn btn-outline-primary btn-block my-4">
+                    {{ 'Continue'|trans }}
+                </button>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

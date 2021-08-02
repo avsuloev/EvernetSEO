@@ -6,6 +6,9 @@
 parameters:
     app.api.cache_ttl: 5 # Время жизни кэша в секундах
     app.api.y_metrika.cache_ttl: 60 # fixme: rm
+    app.upload.default: '%kernel.project_dir%/public/uploads'
+    app.upload.import_dir: '%kernel.project_dir%/public/uploads/documents/import'
+    app.supported_locales: 'en|ru'
 
 services:
     # default configuration for services in *this* file
@@ -94,5 +97,8 @@ services:
     App\Service\API\YandexMetrika\PeriodStrategy\RecentPeriodStrategy:
         arguments:
 
+    App\Service\FileUploader:
+        arguments:
+            $targetDirectory: '%app.upload.default%'
 
     ###< initialized parameters

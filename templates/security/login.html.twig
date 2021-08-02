@@ -1,30 +1,104 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Log in!{% endblock %}
+{% block stylesheets %}
+    {{ encore_entry_link_tags('login') }}
+{% endblock %}
+
+{% block title %}{{ 'Login'|trans }}{% endblock %}
 
 {% block body %}
-<form method="post">
-    {% if error %}
-        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-    {% endif %}
+    <div class="limiter">
+        <div class="container-login100">
+            <div class="wrap-login100">
 
-    {% if app.user %}
-        <div class="mb-3">
-            You are logged in as {{ app.user.username }}, <a href="{{ path('app_logout') }}">Logout</a>
+                <form
+                    method="post"
+                    class="login100-form validate-form p-l-55 p-r-55 p-t-178"
+                >
+                    {% if error %}
+                        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                    {% endif %}
+
+                    <span class="login100-form-title">
+                        {{ 'Authorization'|trans }}
+                    </span>
+                    <div class="wrap-input100 validate-input m-b-16" data-validate="{{ 'Please enter username'|trans }}">
+                        <input
+                            class="input100 form-control"
+                            type="text"
+                            name="_username"
+                            placeholder="{{ 'Username'|trans }}"
+                            id="inputUsername"
+                            value="{{ last_username }}"
+                            autocomplete="username"
+                            required
+                            autofocus
+                        >
+                        <span class="focus-input100"></span>
+                    </div>
+                    <div class="wrap-input100 validate-input m-b-23" data-validate="{{ 'Please enter password'|trans }}">
+                        <input
+                            class="input100 form-control"
+                            type="password"
+                            name="_password"
+                            placeholder="{{ 'Password'|trans }}"
+                            id="inputPassword"
+                            autocomplete="current-password"
+                            required
+                        >
+                        <span class="focus-input100"></span>
+                    </div>
+
+                    <input type="hidden" name="_csrf_token"
+                           value="{{ csrf_token('authenticate') }}"
+                    >
+
+                    {#                <div class="text-right p-t-13 p-b-23">#}
+                    {#                    <span class="txt1">#}
+                    {#                        Forgot#}
+                    {#                    </span>#}
+                    {#                    <a href="#" class="txt2">#}
+                    {#                        Username / Password?#}
+                    {#                    </a>#}
+                    {#                </div>#}
+                    {% if app.user %}
+                        <div class="mb-3">
+                            {{ 'You are logged in as'|trans }} <strong>{{ app.user }}</strong>, <a href="{{ path('app_logout') }}">{{ 'Logout'|trans }}</a>
+                        </div>
+                    {% endif %}
+
+                    <div class="container-login100-form-btn m-b-40">
+                        <button
+                            class="login100-form-btn"
+                            type="submit"
+                        >
+                            {{ 'Sign in'|trans }}
+                        </button>
+                    </div>
+                    {#                <div class="flex-col-c p-t-170 p-b-40">#}
+                    {#                    <span class="txt1 p-b-9">#}
+                    {#                        Don’t have an account?#}
+                    {#                    </span>#}
+                    {#                    <a href="#" class="txt3">#}
+                    {#                        Sign up now#}
+                    {#                    </a>#}
+                    {#                </div>#}
+                </form>
+            </div>
         </div>
-    {% endif %}
 
-    <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-    <label for="inputUsername">Username</label>
-    <input type="text" value="{{ last_username }}" name="username" id="inputUsername" class="form-control" autocomplete="username" required autofocus>
-    <label for="inputPassword">Password</label>
-    <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
 
-    <input type="hidden" name="_csrf_token"
-           value="{{ csrf_token('authenticate') }}"
-    >
+        {#    <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>#}
+        {#    <label for="inputUsername">Username</label>#}
+        {#    <input type="text" value="{{ last_username }}" name="username" id="inputUsername" class="form-control" autocomplete="username" required autofocus>#}
+        {#    <label for="inputPassword">Password</label>#}
+        {#    <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>#}
 
-    {#
+        {#    <input type="hidden" name="_csrf_token"#}
+        {#           value="{{ csrf_token('authenticate') }}"#}
+        {#    >#}
+
+        {#
         Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
         See https://symfony.com/doc/current/security/remember_me.html
 
@@ -33,10 +107,10 @@
                 <input type="checkbox" name="_remember_me"> Remember me
             </label>
         </div>
-    #}
+        #}
 
-    <button class="btn btn-lg btn-primary" type="submit">
-        Sign in
-    </button>
-</form>
+        {#    <button class="btn btn-lg btn-primary" type="submit">#}
+        {#        Sign in#}
+        {#    </button>#}
+    </div>
 {% endblock %}

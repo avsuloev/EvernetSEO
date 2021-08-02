@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {{ flasher_render() }}
+    <section class="container">
+        <div class="row justify-content-center mt-5">
+            <div class="col-md-5">
+                <form
+                    action="{{ path('request_login_link') }}"
+                    method="POST"
+                    class="text-center border border-light p-5"
+                >
+                    <p class="h4 mb-4">{{ 'Enter Evernet CRM'|trans }}</p>
+                    <div class="mb-3">
+                        <input
+                            class="form-control form-control-lg mb-4"
+                            type="email"
+                            name="email"
+                            placeholder="{{ 'Enter your email address'|trans }}"
+                            required
+                            autofocus
+                        >
+                        <button type="submit" class="btn btn-outline-primary btn-block my-4">
+                            {{ 'Send Login Link'|trans }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+{% endblock %}

@@ -2,28 +2,75 @@ security:
     encoders:
         App\Entity\Admin:
             algorithm: auto
+        App\Entity\Client:
+            algorithm: auto
 
     # https://symfony.com/doc/current/security/experimental_authenticators.html
     enable_authenticator_manager: true
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     providers:
         # used to reload user from session & other features (e.g. switch_user)
-        app_user_provider:
+        app_client_provider:
+            entity:
+                class:    App\Entity\Client
+                property: email
+        app_admin_provider:
             entity:
                 class: App\Entity\Admin
                 property: username
+        app_all_users_provider:
+            chain:
+                providers: [ app_admin_provider, app_client_provider ]
+
+    role_hierarchy:
+        ROLE_ADMIN: ROLE_USER
+        ROLE_SUPER_ADMIN: [ ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH ]
+        ROLE_CLIENT: ROLE_USER
+
     firewalls:
+        # Symfony’s dev tools
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
+        admin:
+            lazy: true
+            pattern:   ^/(%app.supported_locales%)/(admin|efconnect|elfinder)
+            provider: app_admin_provider
+            # stateless: true
+            # custom_authenticators:
+            #     - App\Security\AppAuthenticator
+            # entry_point: form_login
+            form_login:
+                login_path: app_login
+                check_path: app_login
+                default_target_path: admin
+            logout:
+                path:   app_logout
+                # where to redirect after logout
+                target: app_login
+            login_throttling:
+                max_attempts: 3
+                interval:     '15 minutes'
         main:
             lazy: true
-            provider: app_user_provider
-            custom_authenticator: App\Security\AppAuthenticator
+            provider: app_client_provider
+            # custom_authenticator:
+                # - App\Security\ReferralAuthenticator
             logout:
                 path: app_logout
                 # where to redirect after logout
-                # target: app_any_route
+                target: request_login_link
+            login_link:
+                check_route: login_check # name of the route that Symfony need to generate the login link to authenticate the user
+                signature_properties: ['id', 'email'] # used to create a signed URL. Must contain at least one property, that uniquely identifies this user
+                lifetime: 300 # in seconds
+                check_post_only: true # only handle HTTP POST methods (Email providers and browsers often load a preview of the links).
+                failure_handler: App\Security\AuthenticationFailureHandler
+                success_handler: App\Security\AuthenticationSuccessHandler
+                # max_uses: 3
+            login_throttling:
+                max_attempts: 30
+                interval:     '15 minutes'
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#firewalls-authentication
@@ -34,5 +81,13 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        - { path: ^/admin, roles: ROLE_ADMIN }
+        # allow unauthenticated users to access the login form
+        - { path: ^/(%app.supported_locales%)/admin/login, roles: PUBLIC_ACCESS, requires_channel: '%env(SECURE_SCHEME)%' }
+        # but require authentication for all other admin routes
+        - { path: ^/(%app.supported_locales%)/admin, roles: ROLE_ADMIN, requires_channel: '%env(SECURE_SCHEME)%' }
+        - { path: ^/efconnect, role: ROLE_ADMIN, requires_channel: '%env(SECURE_SCHEME)%' }
+        - { path: ^/elfinder, role: ROLE_ADMIN, requires_channel: '%env(SECURE_SCHEME)%' }
+        - { path: ^/(%app.supported_locales%)/manage*, roles: [ROLE_ADMIN, ROLE_CLIENT], requires_channel: '%env(SECURE_SCHEME)%' }
+        - { path: ^/(%app.supported_locales%)/download*, roles: [ROLE_ADMIN, ROLE_CLIENT] }
         # - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/, roles: PUBLIC_ACCESS, requires_channel: '%env(SECURE_SCHEME)%' }
