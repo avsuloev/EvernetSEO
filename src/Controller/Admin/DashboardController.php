@@ -35,6 +35,18 @@ class DashboardController extends AbstractDashboardController
             ->setTitle('EvernetSEO');
     }
 
+    public function configureCrud(): Crud
+    {
+        return Crud::new()
+            // the first argument is the "template name", which is the same as the
+            // Twig path but without the `@EasyAdmin/` prefix
+            ->overrideTemplates([
+                'layout' => 'admin/layout.html.twig',
+                // 'crud/includes/_batch_action_modal' => 'admin/crud/includes/_batch_action_modal.html.twig',
+            ])
+        ;
+    }
+
     public function configureMenuItems(): iterable
     {
         // yield MenuItem::linktoDashboard('Dashboard', 'fa fa-home');
@@ -57,16 +69,5 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToUrl('Yandex.Metrika', 'fab fa-yandex', 'https://metrika.yandex.ru');
         yield MenuItem::linkToUrl('TopVisor', 'fas fa-search', 'https://topvisor.com/account');
         yield MenuItem::linkToUrl('Etxt', 'fab fa-internet-explorer', 'https://www.etxt.ru/users/signin');
-    }
-
-    public function configureCrud(): Crud
-    {
-        return Crud::new()
-            // the first argument is the "template name", which is the same as the
-            // Twig path but without the `@EasyAdmin/` prefix
-            ->overrideTemplates([
-                'layout' => 'admin/layout.html.twig',
-            ])
-        ;
     }
 }

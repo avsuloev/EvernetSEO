@@ -2,5 +2,5 @@
 
 {{ form_start(form, {attr: {class: 'input-group py-4'}}) }}
 {{ form_widget(form.query) }}
-{{ form_widget(form.submit) }}
+{{ form_widget(form.submit, { 'label': 'Select'|trans }) }}
 {{ form_end(form) }}

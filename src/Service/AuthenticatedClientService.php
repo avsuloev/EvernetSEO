@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Entity\Client;
 use App\Model\KwCollectionModel;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Security\Core\Security;
 
 class AuthenticatedClientService
@@ -17,44 +18,33 @@ class AuthenticatedClientService
     {
     }
 
+    /**
+     * @throws \Exception
+     */
     public function getClient(): Client
     {
         $client = $this->client ?? $this->security->getUser();
         if (null === $client) {
-            // todo: implement logic
+            // todo: implement logic.
             throw new \Exception('Client is not authenticated!');
         }
         if (!($client instanceof Client)) {
-            // todo: implement logic
+            // todo: implement logic.
             throw new \Exception('Authenticated user is not a client!');
         }
 
         return $client;
     }
 
-    public function getAllKeywords(): KwCollectionModel
+    public function getActiveProjects(): Collection
     {
-        $client = $this->getClient();
-        $projects = $client->getProjects();
-        $kwGroupsByProjects = new ArrayCollection();
-
-        foreach ($projects as $project) {
-            $kwGroups = $project->getKeywordGroups();
-            foreach ($kwGroups as $kwGroup) {
-                if (!$kwGroupsByProjects->contains($kwGroup)) {
-                    $kwGroupsByProjects[] = $kwGroup;
-                }
-            }
+        try {
+            $client = $this->getClient();
+        } catch (\Exception $e) {
+            // todo: implement logic.
+            throw $e;
         }
 
-        $kwCollection = new KwCollectionModel();
-        foreach ($kwGroupsByProjects as $kwGroup) {
-            $keywords = $kwGroup->getKeywords();
-            foreach ($keywords as $keyword) {
-                $kwCollection->addKeyword($keyword);
-            }
-        }
-
-        return $kwCollection;
+        return $client->getProjects();
     }
 }

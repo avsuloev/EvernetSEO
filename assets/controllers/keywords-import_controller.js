@@ -1,38 +1,51 @@
-import { Controller } from 'stimulus';
+import { Controller } from 'stimulus'
+import $ from 'jquery'
 
 /* stimulusFetch: 'lazy' */
 export default class extends Controller {
-    static targets = [ "kwFile", "kwImportForm", "progressValue" ]
+    static targets = [ "kwImportForm", "kwImportFile", "kwImportSubmit", "progressValue" ]
     static values = {
         formUrl: String,
     }
 
-    initialize() {
-        this.boundOnRequestComplete = this.onRequestComplete.bind(this);
-        this.boundOnUploadComplete = this.onUploadComplete.bind(this);
-        this.boundOnUploadProgress = this.onUploadProgress.bind(this);
-    }
-
     async formSubmit(event) {
         event.preventDefault()
-        const formData = new FormData()
-        const xhr = new XMLHttpRequest()
-        const kwInput = this.kwFileTarget
 
-        formData.append("upload[file]", kwInput.files[0])
-        formData.append("upload[name]", kwInput.value)
+        // const form = event.currentTarget
+        // const formData = new FormData(form)
+        // const formSerialized = new URLSearchParams(formData).toString()
+        // const xhr = new XMLHttpRequest()
+        //
+        // console.log(formSerialized)
+        //
+        // this.progressValueTarget.parentElement.hidden = false
+        // xhr.open("POST", this.formUrlValue)
+        // xhr.addEventListener("load", this.onRequestComplete.bind(this), false)
+        // xhr.upload.addEventListener("load", this.onUploadComplete.bind(this), false)
+        // xhr.upload.addEventListener("progress", this.onUploadProgress.bind(this), false)
+        // xhr.send(formSerialized)
 
-        this.progressValueTarget.parentElement.hidden = false
-        xhr.open("POST", this.formUrlValue)
-        xhr.addEventListener("load", this.boundOnRequestComplete, false)
-        xhr.upload.addEventListener("load", this.boundOnUploadComplete, false)
-        xhr.upload.addEventListener("progress", this.boundOnUploadProgress, false)
-        xhr.send(formData)
+
+        const $form = $(event.currentTarget)
+        const importInput = this.kwImportFileTarget
+        const formData = new FormData(event.currentTarget)
+        // formData.append(importInput.name, importInput.files[0])
+
+        console.log(this.formUrlValue)
+
+        this.kwImportFormTarget.innerHTML = await $.ajax({
+            url: this.formUrlValue,
+            method: "POST",
+            data: formData,
+            // THIS MUST BE DONE FOR FILE UPLOADING
+            contentType: false,
+            processData: false,
+        })
     }
 
-    onUploadProgress(event) {
-        if (event.lengthComputable) {
-            const percentComplete = (( event.loaded / event.total ) * 100).toFixed(2)
+    onUploadProgress(e) {
+        if (e.lengthComputable) {
+            const percentComplete = (( e.loaded / e.total ) * 100).toFixed(2)
 
             this.progressValueTarget.setAttribute("style", `width: ${percentComplete}%`)
             this.progressValueTarget.setAttribute("aria-valuenow", percentComplete)

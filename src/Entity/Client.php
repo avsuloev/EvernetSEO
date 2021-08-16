@@ -38,12 +38,12 @@ class Client implements UserInterface
      * @var string The hashed password
      * @ORM\Column(type="string", nullable=true)
      */
-    private $password;
+    private ?string $password;
 
     /**
-     * @ORM\OneToMany(targetEntity=Project::class, mappedBy="client")
+     * @ORM\OneToMany(targetEntity=Project::class, mappedBy="client", cascade={"persist", "remove"})
      */
-    private $projects;
+    private Collection $projects;
 
     /**
      * @ORM\Column(type="boolean")

@@ -1,6 +1,13 @@
 {% form_theme form 'bootstrap_5_layout.html.twig' %}
 {# todo: decouple stimulus controller #}
 
-{{ form_start(form, {'attr': {'role': 'search', 'data-action': 'keywords-management#searchSubmit'}}) }}
-{{ form_widget(form.query, {'attr': {'role': 'search', 'aria-label': 'Search on keywords table', 'data-action': 'keywords-management#searchHandle'}}) }}
+{{ form_start(form, {'attr': {
+    'role': 'search',
+    'data-action': 'keywords-management#searchSubmit'
+}}) }}
+    {{ form_widget(form.query, {'attr': {
+        'role': 'search',
+        'aria-label': 'Search on keywords table'|trans,
+        'data-action': 'keywords-management#searchHandle'
+    }}) }}
 {{ form_end(form) }}

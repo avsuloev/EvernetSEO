@@ -38,10 +38,10 @@ class Project
     private bool $isActive = true;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Client::class, inversedBy="projects")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\ManyToOne(targetEntity=Client::class, inversedBy="projects", cascade={"persist"})
+     * @ORM\JoinColumn(nullable=true)
      */
-    private $client;
+    private ?Client $client;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -49,9 +49,9 @@ class Project
     private string $url;
 
     /**
-     * @ORM\OneToMany(targetEntity=KeywordGroup::class, mappedBy="project", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=KeywordGroup::class, mappedBy="project", orphanRemoval=true, cascade={"persist", "remove"}, fetch="EXTRA_LAZY")
      */
-    private $keywordGroups;
+    private Collection $keywordGroups;
 
     /**
      * @ORM\OneToMany(targetEntity=EtxtTask::class, mappedBy="project")

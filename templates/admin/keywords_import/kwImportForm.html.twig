@@ -1,18 +1,19 @@
 {% form_theme form 'bootstrap_5_layout.html.twig' %}
 
-<h4>Импортировать ключи</h4>
-
 <section
     class="container py-4"
     {{ stimulus_controller('keywords-import', { formUrl: path('import_xslx') }) }}
 >
+    <h4>{{ 'Import keywords'|trans }}</h4>
     {{ form_start(form, {attr: {'data-keywords-import-target': 'kwImportForm', 'data-action': 'keywords-import#formSubmit'}}) }}
     {{ form_errors(form) }}
     <div class="input-group">
         {#    <label for="name">Name</label> <input id="name" type="text" name="name"><br>#}
-        {{ form_widget(form.kwFile, {attr: {'data-keywords-import-target': 'kwFile'}}) }}
+        {{ form_widget(form.project) }}
+        {{ form_widget(form.kwFile, {attr: {'data-keywords-import-target': 'kwImportFile'}}) }}
         {#    <label for="file">File</label> <input id="file" type="file" name="file">#}
-        {{ form_widget(form.submit) }}
+{#        {{ form_widget(form._token, {attr: {'data-keywords-import-target': 'kwImportCsrfToken'}}) }}#}
+        {{ form_widget(form.submit, {attr: {'data-keywords-import-target': 'kwImportSubmit'}}) }}
     </div>
     <hr>
     <div class="progress" hidden>
@@ -34,4 +35,3 @@
 </section>
 
 {#{{ form_widget(form.elfinder) }}#}
-

@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20210702120759 extends AbstractMigration
+final class Version20210811102741 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -20,12 +20,12 @@ final class Version20210702120759 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE client ADD access_url VARCHAR(255) DEFAULT NULL');
+        $this->addSql('ALTER TABLE project CHANGE client_id client_id BINARY(16) DEFAULT NULL COMMENT \'(DC2Type:ulid)\'');
     }
 
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE client DROP access_url');
+        $this->addSql('ALTER TABLE project CHANGE client_id client_id BINARY(16) NOT NULL COMMENT \'(DC2Type:ulid)\'');
     }
 }

@@ -2,29 +2,58 @@
 
 namespace App\Controller;
 
-use App\Form\KwClientFieldsetType;
+use App\Entity\Project;
+use App\Form\KwManageFieldsetType;
+use App\Form\KwManageMulticheckType;
+use App\Form\KwManageProjectType;
+use App\Form\KwManageSearchType;
 use App\Model\KwCollectionModel;
+use App\Repository\KeywordRepository;
 use App\Service\AuthenticatedClientService;
-use App\Service\StimulusAttributesService;
-use Flasher\Prime\FlasherInterface;
-use JetBrains\PhpStorm\Pure;
+use Doctrine\ORM\EntityManagerInterface;
+use Flasher\SweetAlert\Prime\SweetAlertFactory;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\SearchType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class KeywordsManagementController extends AbstractController
 {
-    private const STIMULUS_CTRL = 'keywords-management';
+    public const STIMULUS_CTRL = 'keywords-management';
 
-    private StimulusAttributesService $stimulus;
+    // private StimulusAttributesService $stimulus;
+    private ?Project $project = null;
 
-    #[Pure]
-    public function __construct()
-    {
-        $this->stimulus = new StimulusAttributesService(self::STIMULUS_CTRL);
+    public function __construct(
+        private AuthenticatedClientService $authenticatedClient,
+        private SweetAlertFactory $flasher,
+    ) {
+        // $this->stimulus = new StimulusAttributesService(self::STIMULUS_CTRL);
+    }
+
+    private function setProject(
+        ?Project $project = null,
+    ) {
+        // make sure the user is authenticated first
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        //todo: handle Exceptions better.
+        try {
+            $projects = $this->authenticatedClient->getActiveProjects();
+            if (null !== $project) {
+                $this->project = $projects->contains($project)
+                    ? $project
+                    : throw new \Exception("Your account doesn't have such active projects.")
+                ;
+
+                return $this;
+            }
+            $this->project = $projects->last();
+        } catch (\Exception $e) {
+            $this->flasher->addError($e->getMessage());
+        }
+
+        return $this;
     }
 
     /**
@@ -32,83 +61,99 @@ class KeywordsManagementController extends AbstractController
      */
     #[Route(path: '/{_locale<%app.supported_locales%>}/manage-keywords', name: 'manage_keywords')]
     public function index(
-        AuthenticatedClientService $authenticatedClient,
-        FlasherInterface $flasher,
         Request $request,
+        EntityManagerInterface $em,
+        KeywordRepository $kwRepository,
+        PaginatorInterface $paginator,
     ): Response {
-        // make sure the user is authenticated first
-        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        /** @var Project $project */
+        $project = $request->request->get('project');
+        $this->setProject($project);
+        $project = $this->project;
+        $projectName = $project->getCmsTitle();
 
-        $kwCollection = $authenticatedClient->getAllKeywords();
+        $q = $request->query->get('q');
+        if ($q) {
+            $queryBuilder = $kwRepository->getWithSearchQueryBuilder($q);
+        } else {
+            $queryBuilder = $kwRepository->getWithByProjectQueryBuilder($projectName);
+        }
+        $pagination = $paginator->paginate(
+            $queryBuilder, /* query NOT result */
+            $request->query->getInt('page', 1) /* page number */,
+            15, /* limit per page */
+        );
+        $pagination->setCustomParameters([
+            'align' => 'center', # center|right (for template: twitter_bootstrap_v4_pagination and foundation_v6_pagination)
+            'size' => 'large', # small|large (for template: twitter_bootstrap_v4_pagination)
+            'style' => 'bottom',
+            // 'span_class' => 'whatever',
+        ]);
 
-        $form = $this->createForm(KwClientFieldsetType::class, $kwCollection);
+        $kwCollection = new KwCollectionModel();
+        $keywords = $pagination->getItems();
+        $pagination->setItems([]); # unsetting pagination AFTER getting items[Keyword] for form
+        foreach ($keywords as $keyword) {
+            $kwCollection->addKeyword($keyword);
+        }
 
+        $form = $this->createForm(KwManageFieldsetType::class, $kwCollection);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             // $form->getData() holds the submitted values
             // but, the original `$kwCollection` variable has also been updated
             /** @var KwCollectionModel $kwCollection */
             $kwCollection = $form->getData();
-            $entityManager = $this->getDoctrine()->getManager();
             foreach ($kwCollection->getKeywords() as $keyword) {
-                $entityManager->persist($keyword);
+                $em->persist($keyword);
             }
-            $entityManager->flush();
+            $em->flush();
 
-            // $flasher
-            //     ->addSuccess('This notification will be rendered using the toastr adapter')
-            //     ->flash()
-            // ;
-
-            // TODO: inform user about operation status/success.
             return $this->render('manage_keywords/index.html.twig', [
                 'form' => $form->createView(),
+                'project_name' => $projectName,
+                'pagination' => $pagination,
             ]);
         }
 
         return $this->render('manage_keywords/index.html.twig', [
             'form' => $form->createView(),
+            'project_name' => $projectName,
+            'pagination' => $pagination,
         ]);
     }
 
     public function multicheck(): Response
     {
-        $actionAttr = $this->stimulus->genActionAttr('multicheck', 'click');
-        $targetAttr = $this->stimulus->genTargetAttr('multicheck');
-        $attr = array_merge($actionAttr, $targetAttr);
-
-        $form = $this->createFormBuilder()
-            ->add('checkbox', CheckboxType::class, [
-                'attr' => $attr,
-                'required' => false,
-                'label' => false,
-                'label_attr' => [
-                    'class' => 'checkbox-switch',
-                ],
-            ])
-            ->getForm()
-        ;
+        $form = $this->createForm(KwManageMulticheckType::class);
 
         return $this->render('manage_keywords/multicheck.html.twig', [
             'form' => $form->createView(),
         ]);
     }
 
+    public function projectEntityForm(Request $request): Response
+    {
+        $form = $this->createForm(KwManageProjectType::class);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            // $form->setData();
+
+            return $this->render('admin/project_report/projectEntityForm.html.twig', [
+                'form' => $form->createView(),
+            ]);
+        }
+
+        return $this->render('admin/project_report/projectEntityForm.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
     public function searchBar(): Response
     {
-        $targetAttr = $this->stimulus->genTargetAttr('search');
-        $attr = array_merge($targetAttr, ['placeholder' => 'Search']);
-
-        $form = $this->createFormBuilder()
-            ->add('query', SearchType::class, [
-                'label' => 'Search',
-                'attr' => $attr,
-                'row_attr' => [
-                    'class' => 'form-floating',
-                ],
-            ])
-            ->getForm()
-        ;
+        $form = $this->createForm(KwManageSearchType::class);
 
         return $this->render('manage_keywords/searchBar.html.twig', [
             'form' => $form->createView(),

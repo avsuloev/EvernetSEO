@@ -42,18 +42,26 @@ class KeywordCrudController extends AbstractCrudController
     public function configureActions(Actions $actions): Actions
     {
         $tvApiUpdate = Action::new('tvApiUpdate', 'Обновить позицию', 'fa fa-file')
-            ->linkToRoute('')
+            ->linkToRoute('kw_update_position')
+            ->setHtmlAttributes([
+                'data-action' => 'modal-form#openModalChangeUrlOnSelected',
+            ])
         ;
         $changeUrl = Action::new('changeUrl', 'Изменить адрес сайта', 'fa fa-file')
             ->linkToRoute('change_url_form')
-            ->addCssClass('btn btn-primary')
             ->setIcon('fa fa-user-check')
-            ->setHtmlAttributes(['data-action' => 'modal-form#openModalChangeProjectOnSelected'])
+            // ->setTemplatePath('admin/crud/action.html.twig')
+            ->setHtmlAttributes([
+                'data-action' => 'modal-form#openModalChangeUrlOnSelected',
+            ])
         ;
         $tvApiUpdateGlobal = Action::new('tvApiUpdateGlobal', 'Обновить все позиции', 'fa fa-file')
-            ->linkToRoute('')
+            ->linkToRoute('kw_update_position')
             ->createAsGlobalAction()
             ->addCssClass('btn btn-secondary')
+            ->setHtmlAttributes([
+                'data-action' => 'modal-form#openModalChangeUrlOnSelected',
+            ])
         ;
 
         return $actions
@@ -61,13 +69,19 @@ class KeywordCrudController extends AbstractCrudController
             ->add(Crud::PAGE_INDEX, $tvApiUpdateGlobal)
             ->add(Crud::PAGE_INDEX, $changeUrl)
             ->addBatchAction(Action::new('tvApiUpdateSelected', 'Обновить позиции')
-                ->linkToRoute('')
+                ->linkToRoute('kw_update_position')
                 ->addCssClass('btn btn-primary')
-                ->setIcon('fa fa-user-check'))
+                ->setIcon('fa fa-user-check')
+                ->setHtmlAttributes([
+                    'data-action' => 'modal-form#openModalChangeUrlOnSelected',
+                ]))
             ->addBatchAction(Action::new('changeUrlOnSelected', 'Изменить адрес сайта')
-                ->linkToRoute('')
+                ->linkToRoute('change_url_form')
                 ->addCssClass('btn btn-primary')
-                ->setIcon('fa fa-user-check'))
+                ->setIcon('fa fa-user-check')
+                ->setHtmlAttributes([
+                    'data-action' => 'modal-form#openModalChangeUrlOnSelected',
+                ]))
         ;
     }
 

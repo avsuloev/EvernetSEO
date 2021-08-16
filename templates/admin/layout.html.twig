@@ -11,20 +11,49 @@
     {{ encore_entry_script_tags('admin') }}
 {% endblock %}
 
-{% block page_actions_wrapper %}
+{% block content %}
     <div
-        class="page-actions"
         {{ stimulus_controller('modal-form', {
             formUrl: path('change_project_form')
         }) }}
+        data-action="hidden.bs.modal->modal-form#modalHidden"
     >
-        {% block page_actions %}{% endblock %}
+        {{ parent() }}
 
         {{ include('_modal.html.twig', {
             modalTitle: 'Modal window',
         }) }}
     </div>
+    {#    <div {{ stimulus_controller('modal-form', #}{#}#}
+    {#        formUrl: path('change_project_form')#}
+    {#    }) }}>#}
+    {#        <button#}
+    {#            class="btn btn-primary btn-sm"#}
+    {#            data-action="modal-form#openModal"#}
+    {#        >Add+</button>#}
+    {#        {{ include('_modal.html.twig', #}{#}#}
+    {#            modalTitle: 'Add a new Product',#}
+    {#        }) }}#}
+    {#    </div>#}
 {% endblock %}
+
+
+{#{% block page_actions_wrapper %}#}
+{#    <div#}
+{#        class="page-actions"#}
+{#        {{ stimulus_controller('modal-form', {#}
+{#            formUrl: path('change_project_form')#}
+{#        }) }}#}
+{#        data-action="hidden.bs.modal->modal-form#modalHidden"#}
+{#    >#}
+
+{#        {% block page_actions %}{% endblock %}#}
+
+{#        {{ include('_modal.html.twig', {#}
+{#            modalTitle: 'Modal window',#}
+{#        }) }}#}
+{#    </div>#}
+{#{% endblock %}#}
 
 {% block header %}
     {{ parent() }}
@@ -37,19 +66,4 @@
 
 {% block sidebar %}
     {{ parent() }}
-{% endblock %}
-
-{% block content %}
-    {{ parent() }}
-{#    <div {{ stimulus_controller('modal-form', {#}
-{#        formUrl: path('change_project_form')#}
-{#    }) }}>#}
-{#        <button#}
-{#            class="btn btn-primary btn-sm"#}
-{#            data-action="modal-form#openModal"#}
-{#        >Add+</button>#}
-{#        {{ include('_modal.html.twig', {#}
-{#            modalTitle: 'Add a new Product',#}
-{#        }) }}#}
-{#    </div>#}
 {% endblock %}

@@ -101,10 +101,6 @@
         <source>Manage project</source>
         <target>Управлять проектом</target>
       </trans-unit>
-      <trans-unit id="wSdDnqg" resname="Current projects">
-        <source>Current projects</source>
-        <target>Текущие проекты</target>
-      </trans-unit>
       <trans-unit id="IeYXhsW" resname="Enter Evernet CRM">
         <source>Enter Evernet CRM</source>
         <target>Войти в Evernet CRM</target>
@@ -113,13 +109,37 @@
         <source>Close</source>
         <target>Закрыть</target>
       </trans-unit>
-      <trans-unit id="3Qrnpcv" resname="Save changes">
-        <source>Save changes</source>
+      <trans-unit id="FQn1YfJ" resname="Save">
+        <source>Save</source>
         <target>Применить</target>
       </trans-unit>
       <trans-unit id="RPXj__x" resname="Comment">
         <source>Comment</source>
         <target>Комментарий</target>
+      </trans-unit>
+      <trans-unit id="1ur_gjW" resname="Download">
+        <source>Download</source>
+        <target>Скачать</target>
+      </trans-unit>
+      <trans-unit id="KngCXea" resname="Select">
+        <source>Select</source>
+        <target>Выбрать</target>
+      </trans-unit>
+      <trans-unit id="PoLhHlD" resname="Select the project you want to manage today">
+        <source>Select the project you want to manage today</source>
+        <target>Выберите проект, которым Вы хотите управлять сегодня</target>
+      </trans-unit>
+      <trans-unit id="xNiR6ah" resname="Add comment">
+        <source>Add comment</source>
+        <target>Добавить комментарий</target>
+      </trans-unit>
+      <trans-unit id="TzRvd3L" resname="Edit comment">
+        <source>Edit comment</source>
+        <target>Изменить комментарий</target>
+      </trans-unit>
+      <trans-unit id="vzVEWxU" resname="Search on keywords table">
+        <source>Search on keywords table</source>
+        <target>Поиск по таблице ключевых запросов</target>
       </trans-unit>
     </body>
   </file>

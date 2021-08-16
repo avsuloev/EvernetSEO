@@ -26,7 +26,7 @@ class PresetParametersStrategy implements YMParametersStrategyInterface
 
     public function getCacheKey(): string
     {
-        $this->cacheKey = $this->cacheKey ?? (new \ReflectionClass($this))->getShortName();
+        $this->cacheKey ??= (new \ReflectionClass($this))->getShortName();
 
         return $this->cacheKey."_$this->presetName";
     }

@@ -9,14 +9,16 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class KwClientFieldsetType extends AbstractType
+class KwManageFieldsetType extends AbstractType
+//    implements DataMapperInterface
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
             ->add('keywords', CollectionType::class, [
-                'entry_type' => KwClientsCheckboxType::class,
+                'entry_type' => KwManageCheckboxType::class,
             ])
+            // ->add('multicheck', KwManageMulticheck::class)
             ->add('submit', SubmitType::class)
         ;
     }

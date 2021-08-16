@@ -21,9 +21,9 @@ class Keyword
     private string $name;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private string $url;
+    private ?string $url;
 
     /**
      * @ORM\Column(type="boolean")
@@ -31,7 +31,7 @@ class Keyword
     private bool $isApproved = false;
 
     /**
-     * @ORM\ManyToOne(targetEntity=KeywordGroup::class, inversedBy="keywords")
+     * @ORM\ManyToOne(targetEntity=KeywordGroup::class, inversedBy="keywords", cascade={"persist"})
      */
     private ?KeywordGroup $keywordGroup;
 

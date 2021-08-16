@@ -61,4 +61,15 @@ class ActionController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+
+    /**
+     * Batch action.
+     */
+    #[Route('/{_locale<%app.supported_locales%>}/admin/action/kw-update-position', name: 'kw_update_position')]
+    public function updateKwPosition()
+    {
+        return $this->render('admin/crud/actions/_confirmation.html.twig', [
+            'content' => "I'm a Form!",
+        ]);
+    }
 }

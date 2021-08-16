@@ -16,7 +16,7 @@ class CustomParametersStrategy implements YMParametersStrategyInterface
 
     public function getCacheKey(): string
     {
-        $this->cacheKey = $this->cacheKey ?? (new \ReflectionClass($this))->getShortName();
+        $this->cacheKey ??= (new \ReflectionClass($this))->getShortName();
 
         return $this->cacheKey.md5(serialize($this->queryParameters));
     }

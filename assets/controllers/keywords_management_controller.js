@@ -1,12 +1,20 @@
-import { Controller } from 'stimulus';
+import { Controller } from 'stimulus'
+import $ from "jquery";
 
 /* stimulusFetch: 'lazy' */
 export default class extends Controller {
-    static targets = [ "table", "search", "multicheck" ]
+    static targets = [ "table", "form", "search", "multicheck" ]
 
     connect() {
-        this.boundSearchHandle = this.searchHandle.bind(this);
-        this.searchTarget.addEventListener("search", this.boundSearchHandle, false)
+        this.searchTarget.addEventListener("search", this.searchHandle.bind(this), false)
+
+        // document.getElementsByClassName("kw_client_fieldset")[0]
+        //     .getElementsByTagName("input")
+        this.formTarget.addEventListener("search", this.formSubmit.bind(this), false)
+
+        // $('.kw_client_fieldset input').on("change", () => {
+        //     $(this).closest('form').submit();
+        // });
     }
 
     async searchSubmit(event) {
@@ -56,6 +64,20 @@ export default class extends Controller {
             if (parent.style.display !== "none") {
                 checkbox.checked = multicheck
             }
+        })
+    }
+
+    async formSubmit(event) {
+        const $form = $(event.currentTarget)
+        const formData = new FormData(event.currentTarget)
+
+        this.kwTableTarget.innerHTML = await $.ajax({
+            url: $(this).attr('action'),
+            method: "POST",
+            data: formData,
+            // THIS MUST BE DONE FOR FILE UPLOADING
+            contentType: false,
+            processData: false,
         })
     }
 }

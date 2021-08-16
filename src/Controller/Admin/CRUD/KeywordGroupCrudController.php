@@ -11,6 +11,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use Symfony\Component\Uid\Ulid;
@@ -75,6 +76,23 @@ class KeywordGroupCrudController extends AbstractCrudController
 
         //# FIELDS INITIALIZATION:
         [$id, $createdAt, $updatedAt] = CrudDefaults::getAdminFields();
+        $lvl = IntegerField::new('level')
+            ->setLabel('Level')
+            ->setFormTypeOption('disabled', 'disabled')
+        ;
+        $left = IntegerField::new('left')
+            ->setLabel('Left')
+            ->setFormTypeOption('disabled', 'disabled')
+        ;
+        $right = IntegerField::new('right')
+            ->setLabel('Right')
+            ->setFormTypeOption('disabled', 'disabled')
+        ;
+        $root = AssociationField::new('root')
+            ->setCrudController(__CLASS__)
+            ->setLabel('Root')
+            ->setFormTypeOption('disabled', 'disabled')
+        ;
         $name = TextField::new('name')
             ->setLabel('Имя')
         ;
@@ -88,6 +106,7 @@ class KeywordGroupCrudController extends AbstractCrudController
             ->setCrudController(KeywordCrudController::class)
             // ->autocomplete()
             ->setLabel('Ключи')
+            ->setCustomOption('by_reference', false)
         ;
         // $subgroupsOnEdit = AssociationField::new('subgroups')
         //     ->setCrudController(__CLASS__)
@@ -135,7 +154,8 @@ class KeywordGroupCrudController extends AbstractCrudController
         $adminFieldsOnDetail = [
             FormField::addPanel('Информация для администратора'),
             $id,
-            // $nestingLvl,
+            $root,
+            // $depth,
             $createdAt,
             $updatedAt,
         ];
@@ -152,6 +172,7 @@ class KeywordGroupCrudController extends AbstractCrudController
                 ...$commonFormFields,
                 // $isExcludedAsSub->setLabel('Корневая'),
                 // $nestingLvl->setLabel('Вложенность'),
+                $root,
                 $createdAt,
                 $updatedAt,
             ];
@@ -171,6 +192,10 @@ class KeywordGroupCrudController extends AbstractCrudController
                 // $keywords,
                 ...$commonFormFields,
                 // $isExcludedAsSub,
+                $root,
+                $lvl,
+                $left,
+                $right,
                 ...$adminFieldsOnDetail,
             ];
         }
@@ -178,6 +203,10 @@ class KeywordGroupCrudController extends AbstractCrudController
         return [
             ...$commonFormFields,
             // $isExcludedAsSub,
+            $root,
+            $lvl,
+            $left,
+            $right,
             ...$adminFieldsOnDetail,
         ];
     }

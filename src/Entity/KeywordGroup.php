@@ -3,17 +3,17 @@
 namespace App\Entity;
 
 use App\Entity\Traits\GeneratedULIDTrait;
+use App\Repository\KeywordGroupRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
-use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 use Gedmo\Tree\Traits\NestedSetEntityUuid;
 
 /**
  * @Gedmo\Tree(type="nested")
- * @ORM\Entity(repositoryClass=NestedTreeRepository::class)
+ * @ORM\Entity(repositoryClass=KeywordGroupRepository::class)
  */
 class KeywordGroup
 {
@@ -27,13 +27,13 @@ class KeywordGroup
     private string $name;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Project::class, inversedBy="keywordGroups")
+     * @ORM\ManyToOne(targetEntity=Project::class, inversedBy="keywordGroups", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      */
     private ?Project $project;
 
     /**
-     * @ORM\OneToMany(targetEntity=Keyword::class, mappedBy="keywordGroup", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=Keyword::class, mappedBy="keywordGroup", orphanRemoval=true, cascade={"persist"})
      */
     private $keywords;
 
@@ -48,7 +48,7 @@ class KeywordGroup
      *
      * @Gedmo\TreeRoot
      * @ORM\ManyToOne(targetEntity=KeywordGroup::class)
-     * @ORM\JoinColumn(name="tree_root", referencedColumnName="id", onDelete="CASCADE")
+     * @ORM\JoinColumn(name="tree_root", referencedColumnName="id", onDelete="CASCADE", nullable=true)
      */
     private $root;
 
@@ -69,6 +69,9 @@ class KeywordGroup
 
     public function __construct()
     {
+        // $this->level = 0;
+        // $this->right = 0;
+        // $this->left = 0;
         $this->keywords = new ArrayCollection();
         $this->subgroups = new ArrayCollection();
     }
@@ -137,6 +140,9 @@ class KeywordGroup
         return $this->root;
     }
 
+    /**
+     * rm candidate.
+     */
 //    public function setRoot(?self $root): self
 //    {
 //        $this->root = $root;
@@ -164,6 +170,9 @@ class KeywordGroup
         return $this->subgroups;
     }
 
+    /**
+     * rm candidate.
+     */
 //    public function addSubgroup(self $subgroup): self
 //    {
 //        if (!$this->subgroups->contains($subgroup)) {
@@ -173,7 +182,10 @@ class KeywordGroup
 //
 //        return $this;
 //    }
-//
+
+    /**
+     * rm candidate.
+     */
 //    public function removeSubgroup(self $subgroup): self
 //    {
 //        if ($this->subgroups->removeElement($subgroup)) {

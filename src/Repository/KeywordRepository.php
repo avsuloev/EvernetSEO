@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Keyword;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -17,6 +18,40 @@ class KeywordRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Keyword::class);
+    }
+
+    public function getWithSearchQueryBuilder(?string $term): QueryBuilder
+    {
+        $qb = $this->createQueryBuilder('k')
+            ->innerJoin('k.keywordGroup', 'kg')
+            ->addSelect('kg');
+        if ($term) {
+            $qb
+                ->andWhere('k.name LIKE :term OR k.url LIKE :term OR kg.name LIKE :term')
+                ->setParameter('term', '%' . $term . '%')
+            ;
+        }
+        return $qb
+            ->orderBy('k.name', 'DESC')
+        ;
+    }
+
+    /**
+     * @todo: optimize query
+     */
+    public function getWithByProjectQueryBuilder(?string $pName): QueryBuilder
+    {
+        $qb = $this
+            ->createQueryBuilder('k')
+            ->innerJoin('k.keywordGroup', 'kg')
+            ->addSelect('kg')
+            ->innerJoin('kg.project', 'p')
+            ->addSelect('p')
+            ->andWhere('p.cmsTitle LIKE :pName')
+            ->setParameter('pName', '%' . $pName . '%')
+        ;
+
+        return $qb->orderBy('k.name', 'DESC');
     }
 
     // /**

@@ -27,14 +27,17 @@ class ProjectReportController extends AbstractController
     {
         // MyBundle:Foo:bar.html.twig
         $response = new Response();
-        $response->setContent($this->prepareView());
+        $response->setContent(
+            $this->prepareReportView()
+            .$this->renderView('admin/project_report/_download_pdf_btn.html.twig')
+        );
 
         return $response;
     }
 
-    private function prepareView(): string
+    private function prepareReportView(): string
     {
-        $eaContext = $this->adminContextProvider->getContext();
+        // $eaContext = $this->adminContextProvider->getContext();
         $project = $this->project ?? $this->projectRepo->findOneBy([], ['id' => 'desc']);
 
         return $this->renderView('admin/project_report/index.html.twig', [
@@ -47,12 +50,8 @@ class ProjectReportController extends AbstractController
     {
         $form = $this->createFormBuilder()
             ->add('query', EntityType::class, [
-                // looks for choices from this entity
                 'class' => Project::class,
-
-                // uses the User.username property as the visible option string
                 'choice_label' => 'cmsTitle',
-
                 // used to render a select box, check boxes or radios
                 // 'multiple' => true,
                 // 'expanded' => true,
@@ -75,7 +74,7 @@ class ProjectReportController extends AbstractController
     public function genPdf(Pdf $knpSnappyPdf): PdfResponse
     {
         return new PdfResponse(
-            $knpSnappyPdf->getOutputFromHtml($this->prepareView(), ['encoding' => 'utf-8']),
+            $knpSnappyPdf->getOutputFromHtml($this->prepareReportView(), ['encoding' => 'utf-8']),
             'report.pdf'
         );
     }

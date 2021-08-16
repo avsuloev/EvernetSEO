@@ -48,8 +48,9 @@ class ClientCrudController extends AbstractCrudController
         ;
         $projects = AssociationField::new('projects')
             ->setCrudController(ProjectCrudController::class)
-            ->autocomplete()
             ->setLabel('Проекты')
+            // ->autocomplete()
+            ->setCustomOption('by_reference', false)
         ;
         //# FIELDS GROUPS (ORDER: index, new, details, form):
         $adminFieldsOnDetail = [

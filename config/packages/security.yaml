@@ -88,6 +88,6 @@ security:
         - { path: ^/efconnect, role: ROLE_ADMIN, requires_channel: '%env(SECURE_SCHEME)%' }
         - { path: ^/elfinder, role: ROLE_ADMIN, requires_channel: '%env(SECURE_SCHEME)%' }
         - { path: ^/(%app.supported_locales%)/manage*, roles: [ROLE_ADMIN, ROLE_CLIENT], requires_channel: '%env(SECURE_SCHEME)%' }
-        - { path: ^/(%app.supported_locales%)/download*, roles: [ROLE_ADMIN, ROLE_CLIENT] }
+        - { path: ^/(%app.supported_locales%)/download*, roles: PUBLIC_ACCESS, requires_channel: '%env(SECURE_SCHEME)%' }
         # - { path: ^/profile, roles: ROLE_USER }
         - { path: ^/, roles: PUBLIC_ACCESS, requires_channel: '%env(SECURE_SCHEME)%' }

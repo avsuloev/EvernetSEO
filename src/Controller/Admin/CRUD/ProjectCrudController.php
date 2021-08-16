@@ -56,13 +56,14 @@ class ProjectCrudController extends AbstractCrudController
         $client = AssociationField::new('client')
             ->setCrudController(ClientCrudController::class)
             ->autocomplete()
-            ->setRequired(true)
+            // ->setRequired(true)
             ->setLabel('Клиент')
         ;
         $keywordGroups = AssociationField::new('keywordGroups')
             ->setCrudController(KeywordGroupCrudController::class)
             ->autocomplete()
             ->setLabel('Группы ключей')
+            ->setCustomOption('by_reference', false)
         ;
         $etxtTasks = AssociationField::new('etxtTasks')
             ->setCrudController(EtxtTaskCrudController::class)

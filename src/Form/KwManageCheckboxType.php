@@ -3,9 +3,9 @@
 namespace App\Form;
 
 use App\Entity\Keyword;
+use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -13,7 +13,7 @@ use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class KwClientsCheckboxType extends AbstractType
+class KwManageCheckboxType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -51,8 +51,13 @@ class KwClientsCheckboxType extends AbstractType
                     'placeholder' => '—',
                 ],
             ])
-            ->add('clientNote', HiddenType::class, [
+            ->add('clientNote', TextareaType::class, [
                 'required' => false,
+                // 'autoload' => false,
+                'attr' => [
+                    'hidden' => true,
+                    'class' => 'tinymce',
+                ],
             ])
         ;
     }

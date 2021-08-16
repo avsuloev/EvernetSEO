@@ -40,8 +40,8 @@ class TvRoute
             throw new \TypeError(sprintf('"%s": Argument $path is expected to be a string, array or null, got "%s".', __METHOD__, get_debug_type($path)));
         }
 
-        $data['path'] = $data['path'] ?? $path;
-        $data['name'] = $data['name'] ?? $name;
+        $data['path'] ??= $path;
+        $data['name'] ??= $name;
     }
 
     public function setPath($path)

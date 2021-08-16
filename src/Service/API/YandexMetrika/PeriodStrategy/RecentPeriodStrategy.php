@@ -31,8 +31,8 @@ class RecentPeriodStrategy implements YMPeriodStrategyInterface
         ?\DateTime $edgeDate = null,
         ?string $direction = null,
     ): array {
-        $format = $format ?? 'Y-m-d';
-        $direction = $direction ?? self::BEFORE_DATE;
+        $format ??= 'Y-m-d';
+        $direction ??= self::BEFORE_DATE;
         $initialEdge = null !== $edgeDate ? Carbon::instance($edgeDate) : Carbon::today();
         if (self::BEFORE_DATE === $direction) {
             $startDate = $initialEdge->subDays($daysInterval);
